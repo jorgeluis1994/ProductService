@@ -16,6 +16,7 @@ namespace ProductService.Application.Services
         Task UpdateAsync(Transaction transaction);
         Task<Transaction?> GetByIdAsync(Guid id);
         Task<IEnumerable<Transaction>> GetAllAsync();
+
         Task<IEnumerable<TransactionWithProductInfoDto>> 
             GetTransactionsWithProductInfoAsync(
             Guid productId, 

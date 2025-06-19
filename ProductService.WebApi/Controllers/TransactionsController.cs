@@ -17,6 +17,13 @@ namespace ProductService.WebApi.Controllers
         {
             _transactionService = transactionService;
         }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetAll()
+        {
+            var transactions = await _transactionService.GetAllAsync();
+            return Ok(transactions);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionDto dto)
