@@ -5,6 +5,7 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<IProductService, ProductServices>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 
 Log.Logger = new LoggerConfiguration()
