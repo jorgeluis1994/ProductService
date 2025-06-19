@@ -4,9 +4,21 @@ using ProductService.Application;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Agregar la política de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularApp", builder =>
+    {
+        builder
+            .WithOrigins("http://localhost:4200") // <-- Aquí tu Angular
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddScoped<IProductService, ProductServices>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
-
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Information()
@@ -24,6 +36,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+app.UseCors("AllowAngularApp");
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

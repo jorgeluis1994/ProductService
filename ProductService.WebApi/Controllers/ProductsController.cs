@@ -19,7 +19,7 @@ namespace ProductService.WebApi.Controllers
         }
 
         // Create
-        [HttpPost]
+        [HttpPost("save")]
         public async Task<IActionResult> CreateProduct([FromBody] CreateProductDto dto)
         {
             var product = new Product(
@@ -56,18 +56,36 @@ namespace ProductService.WebApi.Controllers
         }
 
         // Update
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] CreateProductDto dto)
-        //{
-        //    var existingProduct = await _productService.GetByIdAsync(id);
-        //    if (existingProduct == null)
-        //        return NotFound();
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] UpdateProductDto dto)
+        {
+            if (id != dto.Id)
+            {
+                return BadRequest("El ID de la URL no coincide con el ID del cuerpo de la solicitud.");
+            }
 
-        //    existingProduct.Update(dto.Name, dto.Description, dto.Category, dto.ImageUrl, dto.Price, dto.Stock);
-        //    await _productService.UpdateAsync(existingProduct);
+            var existingProduct = await _productService.GetByIdAsync(id);
+            if (existingProduct == null)
+            {
+                return NotFound();
+            }
 
-        //    return NoContent();
-        //}
+            // Mapear los campos del DTO al producto existente
+            existingProduct.Name = dto.Name;
+            existingProduct.Description = dto.Description;
+            existingProduct.Category = dto.Category;
+            existingProduct.ImageUrl = dto.ImageUrl;
+            existingProduct.Price = dto.Price;
+            existingProduct.Stock = dto.Stock;
+
+            // Guardar cambios
+            await _productService.UpdateAsync(existingProduct);
+
+            // Retornar el producto actualizado
+            return Ok(existingProduct);
+        }
+
+
 
         // Delete
         [HttpDelete("{id}")]
