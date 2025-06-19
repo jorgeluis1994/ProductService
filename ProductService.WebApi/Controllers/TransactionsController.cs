@@ -63,5 +63,18 @@ namespace ProductService.WebApi.Controllers
             var transactions = await _transactionService.GetTransactionsWithProductInfoAsync(productId, startDate, endDate, transactionType);
             return Ok(transactions);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            var existingProduct = await _transactionService.GetByIdAsync(id);
+            if (existingProduct == null)
+                return NotFound();
+
+            await _transactionService.DeleteAsync(id);
+            return NoContent();
+        }
     }
+         
+        
 }
