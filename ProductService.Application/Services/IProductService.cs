@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ProductService.Application.Services
 {
-    public  interface IProductServices
+    public  interface IProductService
     {
         Task AddAsync(Product product);
         Task<Product?> GetByIdAsync(Guid id);

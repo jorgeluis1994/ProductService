@@ -1,17 +1,18 @@
 ﻿using ProductService.Domain.Models;
 using ProductService.Domain.Repositories;
 using ProductService.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ProductService.Infrastructure.Repositories
 {
-    public  class ProductRepository: IProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly DataDbContext _dbContext;
+
         public ProductRepository(DataDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -23,24 +24,41 @@ namespace ProductService.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var product = await _dbContext.Products.FindAsync(id);
+            if (product != null)
+            {
+                _dbContext.Products.Remove(product);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
-        public Task<IEnumerable<Product>> GetAllAsync()
+        public async Task<IEnumerable<Product>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Products.ToListAsync();
         }
 
-        public Task<Product?> GetByIdAsync(Guid id)
+        public async Task<Product?> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Products.FindAsync(id);
         }
 
-        public Task UpdateAsync(Product product)
+        public async Task UpdateAsync(Product product)
         {
-            throw new NotImplementedException();
+            var existingProduct = await _dbContext.Products.FindAsync(product.Id);
+            if (existingProduct != null)
+            {
+                existingProduct.Name = product.Name;
+                existingProduct.Description = product.Description;
+                existingProduct.Category = product.Category;
+                existingProduct.ImageUrl = product.ImageUrl;
+                existingProduct.Price = product.Price;
+                existingProduct.Stock = product.Stock;
+
+                _dbContext.Products.Update(existingProduct);
+                await _dbContext.SaveChangesAsync();
+            }
         }
     }
 }

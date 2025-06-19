@@ -1,10 +1,10 @@
 using ProductService.Application.Services;
-using ProductService.Application.UseCases;
 using ProductService.Infrastructure.DependencyInjection;
+using ProductService.Application;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<IProductServices, CreateProductUseCase>();
+builder.Services.AddScoped<IProductService, ProductServices>();
 
 
 Log.Logger = new LoggerConfiguration()
